@@ -1,0 +1,17 @@
+
+
+void setup()
+{
+  pinMode(8,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  PORTB = 0b11111111;
+}
+
+void loop()
+{
+  PORTB = PORTB';
+  delay (1000);  
+}
+

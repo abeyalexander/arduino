@@ -1,0 +1,7 @@
+mail.smtp.auth true
+mail.smtp.from 
+mail.smtp.host
+mail.smtp.password
+mail.smtp.port
+mail.smtp.ssl.enable
+mail.smtp.username

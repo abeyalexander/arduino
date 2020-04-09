@@ -1,0 +1,62 @@
+AT+CGATT?
+AT+CIPMUX=0
+AT+CSTT="airtelgprs.com","",""
+AT+CIICR
+AT+CIFSR
+AT+CIPSTART="TCP","demo5.traccar.org","5055"
+AT+CIPSTART="TCP","http://io.adafruit.com","80"
+AT+CIPSTART="TCP","www.google.com","80"
+AT+CIPSTART="UDP","echo.u-blox.com","7"
+
+AT+CIPSEND=175
+GET /update?id=416035&timestamp=1507707500&lat=10.7670786&lon=76.2727124 HTTP/1.1{CrLf}Host: demo5.traccar.org{CrLf}Connection: close{CrLf}Accept: */*{CrLf}
+AT+CIPCLOSE
+AT+CIPSHUT
+
+POST ?id=416035&timestamp=1507719986&lat=10.7671786&lon=76.2727124&speed=145 HTTP/1.1\r\nHost: demo5.traccar.org:5055\r\nAccept-Encoding: identity\r\nContent-Length: 0\r\n\x1A
+
+
+AT+CGATT?
+AT+SAPBR=3,1,"CONTYPE","GPRS"
+AT+SAPBR=3,1,"APN","airtelgprs.com"
+AT+SAPBR=3,1,"USER",""
+AT+SAPBR=3,1,"PWD",""
+
+AT+SAPBR=1,1
+AT+HTTPINIT
+AT+HTTPPARA="CID",1
+AT+HTTPPARA="URL","http://demo5.traccar.org:5055/?id=416035&timestamp=1507870800&lat=11.7671786&lon=76.2727124&speed=10"
+AT+HTTPPARA="URL","https://www.google.co.in"
+AT+HTTPACTION=0
+AT+HTTPTERM
+
+
+AT+HTTPPARA="URL","http://demo5.traccar.org:5055/?&id=416035&timestamp=1507785546&lat=10.7670790&lon=76.272713"
+
+AT+HTTPPARA="URL","http://demo5.traccar.org:5055/?&id=416035&timestamp=1507870600&lat=10.7710710&lon=76.2767110"
+
++HTTPACTION:0,200,0
+
+
+In order to get the time from GSM network, you have to use 2 AT commands.
+
+1. AT+CLTS=1 ----> This is the AT command to enable the gsm module to get the time from the network, once the gsm module is powered on.
+2. AT+CCLK? -----> Once the first AT command is executed, this command can be executed to get the network time.
+
+AT+HTTPPARA="URL","http://demo5.traccar.org:5055/?&id=416035&timestamp=1507980529&lat=10.7680700&lon=76.2737120"
+
+ATD+919847148655
+
+
+To enable this feature you have to set <AT+CTZU=1>. Then whenever you need the network time, you can get it by <AT+CCLK?>.
+
+You can also use command <AT*PSUTTZ>, but it is less common. If you set <AT*PSUTTZ=1> then there will be the URC of "*PSUTTZ ...” after module startup which contains the network time.
+
+For example:
+AT+CCLK?
++CCLK: "00/01/01,00:09:31+00"
+AT+CTZU=1 ==> Enable automatic time zone update via NITZ
+OK
+AT+CCLK?
++CCLK: "12/01/06,07:51:26+04" ==>Time is updated
+		

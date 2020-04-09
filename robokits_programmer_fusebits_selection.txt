@@ -1,0 +1,12 @@
+RoboKits AVR Programmer 2.0
+Fusebit Selection values for ATMega328 Microcontroller at 16Mhz Crystal Frequency
+
+Fusebits Selection
+hFuse D6h
+IFuse FFh
+eFuse <None>
+
+Lockbits Selection
+3Fh
+
+fuse bit selection was taken from progisp

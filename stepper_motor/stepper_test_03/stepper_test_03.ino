@@ -1,0 +1,173 @@
+/*
+   BYJ48 Stepper motor code
+   Connect :
+   IN1 >> D8
+   IN2 >> D9
+   IN3 >> D10
+   IN4 >> D11
+   VCC ... 5V Prefer to use external 5V Source
+   Gnd
+   written By :Mohannad Rawashdeh
+  https://www.instructables.com/member/Mohannad+Rawashdeh/
+     28/9/2013
+*/
+
+#define IN1_1  8
+#define IN1_2  9
+#define IN1_3  10
+#define IN1_4  11
+
+#define IN2_1  4
+#define IN2_2  5
+#define IN2_3  6
+#define IN2_4  7
+
+int Steps = 0;
+boolean Direction = true;// gre
+unsigned long last_time;
+unsigned long currentMillis;
+int steps_left = 4095;
+int step_count = 0, angle, steps_for_angle;
+void setup()
+{
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(A0, INPUT);
+}
+void loop()
+{ 
+  int x[2] = {90, -90};
+  int i = random(0,2);
+  Serial.println(analogRead(A0));
+  rotate(x[i]);
+  delay(1000);
+}
+
+void stepper_off()
+{
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+
+void rotate_steps(int steps)
+{
+  if (steps > 0)
+  {
+    Direction = 1;
+  }
+  else
+  {
+    Direction = 0;
+    steps = abs(steps);
+  }
+  
+  for (int i=0; i<steps; i++)
+  {
+    stepper(1);
+    delayMicroseconds(800);
+  }
+}
+
+void rotate(int angle)
+{
+  float steps_for_angle = 11.37777778 * abs(angle);
+  int step_count = 0;
+  if (angle > 0)
+  {
+    Direction = 1;
+  }
+  else
+  {
+    Direction = 0;
+  }
+  String print_string = "Steps for angle : " + (String)steps_for_angle;
+  while (step_count < steps_for_angle)
+  {
+    stepper(1);
+    delayMicroseconds(3000);
+    stepper_off();
+    step_count++;
+  }
+}
+
+void stepper(int xw) {
+  for (int x = 0; x < xw; x++) { 
+    switch (Steps) 
+    {
+      case 0:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, HIGH);
+        break;
+      case 1:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, HIGH);
+        break;
+      case 2:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, LOW);
+        break;
+      case 3:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, HIGH);
+        digitalWrite(IN3, HIGH);
+        digitalWrite(IN4, LOW);
+        break;
+      case 4:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, HIGH);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, LOW);
+        break;
+      case 5:
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, HIGH);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, LOW);
+        break;
+      case 6:
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, LOW);
+        break;
+      case 7:
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, HIGH);
+        break;
+      default:
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, LOW);
+        digitalWrite(IN3, LOW);
+        digitalWrite(IN4, LOW);
+        break;
+    }
+  }
+  SetDirection();
+}
+void SetDirection() {
+  if (Direction == 1) {
+    Steps++;
+  }
+  if (Direction == 0) {
+    Steps--;
+  }
+  if (Steps > 7) {
+    Steps = 0;
+  }
+  if (Steps < 0) {
+    Steps = 7;
+  }
+}

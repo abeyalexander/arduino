@@ -1,0 +1,32 @@
+/*
+ *  Timer1 library example
+ *  June 2008 | jesse dot tane at gmail dot com
+ */
+ 
+#include "TimerOne.h"
+
+boolean state = true;
+int tick = 0, i = 0;
+void setup()
+{
+  pinMode(10, OUTPUT);
+  Timer1.initialize();                        // initialize timer1, and set a duration in microseconds
+  Timer1.setPeriod(1);
+  //Timer1.attachInterrupt(callback, 1);     // attaches callback() as a timer overflow interrupt
+}
+ 
+void callback()
+{
+  digitalWrite(10, state);
+  state = !state;
+}
+ 
+void loop()
+{
+  if (millis() - tick > 100)
+  {
+    Timer1.pwm(9, i++); 
+    tick = millis();
+    callback();
+  }
+}

@@ -1,0 +1,34 @@
+#include <TimerOne.h>
+
+byte sensor_type = 0; // 0 for Hall Effect, 1 for Ultrasonic 
+
+void setup() 
+{
+  if (sensor_type)
+  {
+    Timer1.initialize(100000);
+    attachInterrupt(digitalPinToInterrupt(0),isr_ultrasonic, CHANGE);
+  }
+
+  else
+  {
+    attachInterrupt(digitalPinToInterrupt(0),isr_halleffect, CHANGE);
+  }
+
+}
+
+void loop() 
+{
+ 
+}
+
+
+void isr_halleffect()
+{
+  
+}
+void isr_ultrasonic()
+{
+  
+}
+

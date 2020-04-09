@@ -1,0 +1,34 @@
+
+
+int led_pin = 9;
+
+void setup() 
+{
+  pinMode(led_pin, OUTPUT);
+  Serial.begin(2000000);
+  TCCR1B = (TCCR1B & 0xF8) | 5; // Set PWM Frequency of pin 9, 10 to 30Hz (Timer 1).
+}
+
+
+void loop() 
+{
+  float value = analogRead(A0)/1023;
+  int pot_value = 255*value;
+  Serial.println(pot_value);
+  analogWrite(led_pin, pot_value);
+}
+
+void pwm_write(int led_pin, float duty_cycle)
+{
+  int pwm_period = 1000;
+  float pwm_on_time = pwm_period*(duty_cycle/100);
+  float pwm_off_time = pwm_period*(1-duty_cycle/100);
+  Serial.print(pwm_on_time);
+  Serial.print(", ");
+  Serial.println(pwm_off_time);
+  digitalWrite(led_pin, HIGH);
+  delayMicroseconds(pwm_on_time);
+  digitalWrite(led_pin, LOW);
+  delayMicroseconds(pwm_off_time);
+}
+

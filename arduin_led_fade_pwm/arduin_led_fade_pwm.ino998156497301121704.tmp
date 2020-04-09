@@ -1,0 +1,26 @@
+#include <Math.h>
+
+int led_pin = 9;
+
+void setup() 
+{
+  pinMode(led_pin, OUTPUT);
+  Serial.begin(2000000);
+  TCCR1B = (TCCR1B & 0xF8) | 1; // Set PWM Frequency of pin 9, 10 to 100Hz (Timer 1).
+}
+
+
+void loop() 
+{
+  float fade_speed = (float)analogRead(A0)/1023;
+  float x = 0;
+  while(true)
+  {
+    x = 0.5+0.5*sin(fade_speed);
+    int pwm_duty_ratio = 100*x;
+    int analog_write_value = 255*pwm_duty_ratio;
+    analogWrite(led_pin, analog_write_value);
+    x = x+(fade_speed/100);
+  }
+}
+

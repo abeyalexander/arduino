@@ -1,0 +1,38 @@
+/*
+ *  Timer1 library example
+ *  June 2008 | jesse dot tane at gmail dot com
+ */
+ 
+#include "TimerOne.h"
+
+int pin = 10, duty = 0;
+boolean state = true;
+int tick = 0, i = 0;
+void setup()
+{
+  Timer1.initialize();                     // initialize timer1, and set a duration in microseconds
+  Timer1.pwm(pin, 128, 1);
+  //Timer1.attachInterrupt(callback);     // attaches callback() as a timer overflow interrupt
+  Serial.begin(2000000);
+}
+ 
+void callback()
+{
+  duty++;
+  Timer1.setPwmDuty(pin, duty);
+}
+ 
+void loop()
+{
+  float fade_freq = 10;
+  float time_instant = 0;
+  while(true)
+  {
+    time_instant = (float)millis()/1000;
+    float x = 0.5+0.5*sin(2*3.14*fade_freq*time_instant);
+    float pwm_duty_ratio = x;
+    int analog_write_value = 1023*(float)pwm_duty_ratio;
+    Timer1.setPwmDuty(pin, analog_write_value);
+    Serial.println(analog_write_value);
+  }
+}

@@ -1,0 +1,18 @@
+uint8_t GPIO_Pin = D2;
+byte state = HIGH;
+void setup() {
+ Serial.begin(9600);
+ attachInterrupt(digitalPinToInterrupt(GPIO_Pin), IntCallback, RISING);
+}
+
+void loop() {
+  Serial.println("Test");
+  digitalWrite(D4, state);
+  delay(1000);
+  state = !state;
+}
+
+void IntCallback(){
+ Serial.print("Stamp(ms): ");
+ Serial.println(millis());
+}

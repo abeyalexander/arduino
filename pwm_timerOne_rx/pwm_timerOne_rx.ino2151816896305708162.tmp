@@ -1,0 +1,49 @@
+#include "TimerOne.h"
+#include "Math.h"
+#define pin 2
+
+unsigned long width_value;
+boolean flag = false;
+float tx_pwm_period = 0.001; // in seconds
+unsigned long tx_pwm_period_us = tx_pwm_period*1000000;
+byte i = 0;
+void setup() 
+{
+  pinMode(pin, INPUT);
+  Serial.begin(115200);
+  attachInterrupt(digitalPinToInterrupt(pin), isr, CHANGE);
+  Timer1.initialize(tx_pwm_period_us);
+}
+
+void loop() 
+{
+  if (flag)
+  {
+    float message = (float)width_value / (tx_pwm_period_us); 
+    //message = message * 255;
+    //if (i%5)
+    {
+      Serial.println(message);
+    }
+    //else
+    {
+      //Serial.println(width_value);
+    }
+    i++;
+    flag = false;
+  }
+}
+
+void isr()
+{
+  if(!digitalRead(pin))
+  {
+    width_value = Timer1.read();
+    flag = true;
+  }
+  else
+  {
+    Timer1.restart();
+  }
+}
+

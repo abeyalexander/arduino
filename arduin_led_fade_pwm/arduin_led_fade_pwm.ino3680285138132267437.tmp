@@ -1,0 +1,28 @@
+int led_pin = 2;
+
+void setup() 
+{
+  pinMode(led_pin, OUTPUT);
+}
+
+
+void loop() 
+{
+  int duty_cycle = 0;
+  while(true)
+  {
+    pwm_write(led_pin, 5);
+  }
+}
+
+void pwm_write(int led_pin, float duty_cycle)
+{
+  int pwm_period = 10;
+  float pwm_on_time = pwm_period*(duty_cycle/100);
+  float pwm_off_time = pwm_period*(1-duty_cycle/100);
+  digitalWrite(led_pin, HIGH);
+  delay(pwm_on_time);
+  digitalWrite(led_pin, LOW);
+  delay(pwm_off_time);
+}
+

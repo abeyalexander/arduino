@@ -1,0 +1,50 @@
+#include "TimerOne.h"
+#include <Math.h>
+#define pin 9
+
+float pwm_period = 0.01; // PWM period in seconds
+unsigned long pwm_period_us = pwm_period * 1000000;
+unsigned long pwm_period_ms = pwm_period * 1000;
+String message = "Hello";
+char m[6];
+int i = 0;
+int on_time, off_time;
+volatile boolean flag = true;
+
+void setup()
+{
+  pinMode(pin, OUTPUT);
+  message.toCharArray(m, 6);
+  Serial.begin(115200);
+  Timer1.initialize();
+  Timer1.attachInterrupt(single_pwm, pwm_period_us);
+}
+
+void loop()
+{
+  while(i<5)
+  {
+    if (flag)
+    {
+      float duty_ratio = (float)(m[i % 5] - 97) / 26;
+      on_time = (float)duty_ratio * pwm_period_us;
+      String print_string =  (String)i + ", " + (String)duty_ratio + ", " + (byte)m[i % 5];
+      Serial.println(print_string);
+      i += 1;
+      flag = false;
+    }
+  }
+}
+
+void single_pwm()
+{
+  if (!flag)
+  {
+    unsigned long tick = Timer1.read();
+    digitalWrite(pin, HIGH);
+    while(Timer1.read() - tick < on_time);
+    digitalWrite(pin, LOW);
+    flag = true;
+  }
+}
+
