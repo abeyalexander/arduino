@@ -15,14 +15,12 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("ILI9341 Test!"); 
- 
   tft.begin();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   tft.fillScreen(ILI9341_BLACK);
-  unsigned long start = micros();
   tft.setCursor(0, 0);
   tft.setTextColor(ILI9341_WHITE);  tft.setTextSize(2);
   tft.println("Hello World!");
