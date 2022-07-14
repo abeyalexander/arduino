@@ -30,6 +30,7 @@ Keypad_I2C keypad = Keypad_I2C( makeKeymap(keys), rowPins, colPins, ROWS, COLS, 
 byte ledPin = 13;
 
 boolean blink = false;
+int value = 32;
 
 void setup() {
   Serial.begin(1000000);
@@ -39,19 +40,31 @@ void setup() {
   digitalWrite(ledPin, HIGH);   // sets the LED on
   keypad.addEventListener(keypadEvent); //add an event listener for this keypad
   tft.begin();
-  tft.setTextColor(ILI9341_WHITE);
-  tft.setTextSize(2);
-  tft.fillScreen(ILI9341_BLACK);
+  //-----------------RRRRRGGGGGGBBBBB
+  tft.setTextColor(0b0000010000010000);
+  tft.fillScreen(ILI9341_WHITE);
+  /*
+    tft.setTextSize(1);
+    tft.fillScreen(ILI9341_WHITE);
+    tft.setCursor(0, 0);
+    for (char i = 0; i < 255; i++) {
+    tft.print(String(i));
+    }
+    tft.println(String((char)34));
+  */
+  writeValue(45, "deg_celcius", 80, 10);
+  writeValue(20, "bar", 80, 60);
+  writeValue(6, "ampere", 80, 110);
+  writeText("CW", "?", 80, 160);
+  writeText("F", "?", 80, 210);
+  writeText("N", "?", 80, 260);
 }
 
 void loop() {
   char key = keypad.getKey();
-
   if (key) {
     Serial.println(key);
-    tft.fillScreen(ILI9341_BLACK);
-    tft.setCursor(0, 0);
-    tft.println("Key: " + String(key));
+    writeText(String(key), "deg_celcius", 80, 10);
   }
   if (blink) {
     digitalWrite(ledPin, !digitalRead(ledPin));
@@ -88,4 +101,32 @@ void keypadEvent(KeypadEvent key) {
       }
       break;
   }
+}
+
+void writeValue(int value, String textUnit, int posX, int posY) {
+  tft.fillRect(posX, posY, 80, 35, ILI9341_WHITE);
+  tft.setTextSize(5);
+  if (value < 10) {
+    tft.setCursor(posX + 30, posY);
+  } else {
+    tft.setCursor(posX, posY);
+  }
+  tft.print(String(value));
+  tft.setCursor(posX + 58, posY + 21);
+  tft.setTextSize(2);
+  tft.print(text2Symbol(textUnit));
+}
+
+void writeText(String text, String textUnit, int posX, int posY) {
+  tft.fillRect(posX, posY, 80, 35, ILI9341_WHITE);
+  tft.setTextSize(5);
+  tft.setCursor(posX, posY);
+  tft.print(text);
+}
+
+String text2Symbol(String textUnit) {
+  if (textUnit == "deg_celcius")
+    return String((char)247) + "C";
+  else
+    return "?";
 }
